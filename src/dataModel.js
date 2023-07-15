@@ -18,4 +18,4 @@ const dataSchema = mongoose.Schema({
     },
 })
 
-module.exports = new mongoose.model('cdata', dataSchema);
+module.exports = new mongoose.model('user-data', dataSchema);
