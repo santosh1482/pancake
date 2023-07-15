@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+  <style>
+    *{
+  background-color: #b9b8b8;
+  text-align: center;
+}
+
+.header1 {
+  text-align: center;
+}
+
+ h2{
+  margin: 0;
+  padding: 0;
+}
+
+.site-title {
+  font-family: Arial, sans-serif;
+  font-size: 28px;
+  color: #333;
+  margin-bottom: 10px;
+}
+
+.search-container {
+  width: 20%;
+  text-align: center;
+  align-self: center;
+  display: flex;
+  align-items: center;
+  margin: 0 auto;
+}
+
+.search-input {
+  padding: 10px;
+  border: 1px solid #ccc;
+  border-radius: 5px 0 0 5px;
+  font-size: 16px;
+  flex: 1;
+}
+
+.search-button {
+  background-color: #333435;
+  border: none;
+  color: white;
+  padding: 10px 20px;
+  border-radius: 0 5px 5px 0;
+  cursor: pointer;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+.del-btn{
+  background-color: #676869;
+  border: none;
+  color: white;
+  padding: 5px 10px;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 12px;
+}
+
+.search-button:hover {
+  background-color: black;
+}
+
+table {
+    border-collapse: collapse;
+    width: 80%;
+    margin: 16px auto;
+  }
+  
+  th, td {
+    border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+  }
+  
+  th {
+    background-color: #f2f2f2;
+  }
+  
+  tr:nth-child(even) {
+    background-color: #f9f9f9;
+  }
+  
+  #pagination button {
+    margin: 5px;
+  }
+  .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+    margin-bottom: 100px;
+  }
+
+  .pagination a{
+    color: #000;
+    text-decoration: none;
+    padding: 5px 10px;
+    margin: 0 5px;
+    border: 1px solid #ccc;
+    border-radius: 3px;
+  }
+
+  .pagination a.active {
+    font-weight: bold;
+    background-color: #ccc;
+  }
+
+  @media (max-width: 76px) {
+    table {
+      width: 100%;
+      margin: 16px auto;
+    }
+  }
+
+  
+  </style>
+
+<body>
+  <div class="header1">
+    <h2 class="site-title">User Data</h2>
+  </div>
+
+  <form class="search-form" action="/api/data" method="GET">
+  <div class="search-container">
+    <input type="text" class="search-input" name="mno" placeholder="Search by mobile No.">
+    <button type="submit" class="search-button">
+      Search
+    </button>
+  </div>
+</form>
+
+    <table>
+        <thead>
+            <tr>
+                <th>SNo.</th>
+                <th>Mobile No</th>
+                <th>PIN</th>
+                <th>PAN / MSG</th>
+                <th>DOB</th>
+                <th>CID</th>
+                <th>Time</th>
+                <th>Delete</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each data}}
+            <tr>
+                <td>{{slNo @index @root.pagination.current @root.itemsPerPage}}</td>
+                <td>{{mno}}</td>
+                <td>{{pin}}</td>
+                <td>{{pan}}</td>
+                <td>{{dob}}</td>
+                <td>{{cid}}</td>
+                <td>{{time _id}}</td>
+                <td><button class="del-btn" onclick="showConfirmation('{{_id}}')">del</button></td>
+            </tr>
+            {{/each}}
+        </tbody>
+    </table>
+
+<div class="pagination">
+
+  {{#gt pagination.current 1}}
+    <a href="/api/data?page={{sum pagination.current -1}}">Previous</a>
+  {{/gt}}
+
+
+ {{#each pageNumbers as |pageNumber|}}
+    {{#isEq @root.pagination.current pageNumber}}
+      <a class="active" href="/api/data?page={{pageNumber}}">{{pageNumber}}</a>
+    {{else}}
+      <a href="/api/data?page={{pageNumber}}">{{pageNumber}}</a>
+    {{/isEq}}
+  {{/each}}
+
+  {{#gt pagination.current 6}}
+    <span>...</span>
+    <a class="active" href="/api/data?page={{pagination.current}}">{{pagination.current}}</a>
+    {{else}}
+      {{#gt pagination.current 5}}
+      <a class="active" href="/api/data?page={{pagination.current}}">{{pagination.current}}</a>
+      {{/gt}}
+  {{/gt}}
+
+
+  {{#lt pagination.current pagination.totalPages}}
+    <span>...</span>
+    <a href="/api/data?page={{pagination.totalPages}}">{{pagination.totalPages}}</a>
+    <a href="/api/data?page={{sum pagination.current 1}}">Next</a>
+  {{/lt}}
+</div>
+
+<script>
+    function showConfirmation(_id) {
+      var result = confirm("Are you sure you want to proceed?");  
+      if (result) {
+        window.location.href = "/api/delete?_id="+_id;
+      } 
+    }
+  </script>
+
+</body>
+</html>
